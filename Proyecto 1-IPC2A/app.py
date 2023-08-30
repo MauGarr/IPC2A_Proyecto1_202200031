@@ -1,5 +1,5 @@
 
-def main():
+def menu():
 
     print("-------------------------------------------------------")
     print("                Proyecto 1 - IPC2 A    ")
@@ -76,4 +76,4 @@ def main():
             print("\nOpción Inválida. Por favor, ingresar una opción válida.")
 
 if __name__ == "__main__":
-    main()
+    menu()
