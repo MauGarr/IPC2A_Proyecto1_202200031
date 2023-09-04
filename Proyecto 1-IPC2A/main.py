@@ -1,99 +1,99 @@
-import xml.etree.ElementTree as ET
+from Listas.senales import SenalesList
+from Estructuras_Listas.nodoSenales import NodoSenal
+import copy
 import os
-from ListaSimple import ListaSimple
-from Elemento import Elemento
-from Item import Item
 
-elementos = ListaSimple()
+#MENÚ PRINCIPAL
+def main():  
 
-def carga_datos():
-    # Cargando el XML desde el archivo
-    tree = ET.parse('datos.xml')
-    root = tree.getroot()
-    # Recorriendo el árbol XML
-    for elemento in root.findall('elemento'):
-        nombre = elemento.get('nombre')
-        id_val = elemento.get('id')
-        cols = int(elemento.get('cols'))
-        rows = int(elemento.get('rows'))
-        elemento_nuevo = Elemento(nombre, id_val, cols, rows)
-        
-        for item in elemento.findall('item'):
-            row = int(item.get('row'))
-            col = int(item.get('col'))
-            text = item.text
-            elemento_nuevo.items.agregar_al_final(Item(row, col, text))
+    listaSenales: SenalesList = SenalesList()  # Instancia de la lista enlazada
+    listaBinaria: SenalesList = SenalesList()  # Instancia de la lista enlazada
+    listaAgrupados: SenalesList = SenalesList()
 
-        elementos.agregar_al_final(elemento_nuevo)
-    print("-" * 30)   
-    print("Datos cargados exitosamente")
-    print("-" * 30)   
-    
-def graficar(elemento):
-    dot_string = 'digraph G {\n'
-    dot_string += elemento.to_dot()
-    dot_string += "}\n"
-    with open("matriz.dot", "w") as archivo:
-        archivo.write(dot_string)
-    os.system("dot -Tpng matriz.dot -o matriz.png")
-    print("¡Gráfica generada en matriz.png!")
+    print("-"*60)
+    print("                    Proyecto 1 - IPC2 A                       ")
+    print("-"*60)
 
-def datos_estudiante():
-    print("\n------------------------------------------------------------")
-    print("Datos del Estudiante: ")
-    print("Edison Mauricio García Rodríguez")
-    print("202200031")
-    print("Introducción a la Programación y Computación 2 sección 'A' ")
-    print("Ingeniería en Ciencias y Sistemas")
-    print("4to. Semestre")
-    print("------------------------------------------------------------")
-       
-def menu():
+    opcion: int = 0
 
-    print("-------------------------------------------------------")
-    print("                Proyecto 1 - IPC2 A    ")
-    print("-------------------------------------------------------")
+    while opcion != 7:
 
-#Menú
-    while True: 
+        try:
 
-        print("\nMenú Principal:")
-        print("1. Cargar Archivo Inicial")
-        print("2. Procesar Archivo y Mostrar Elementos")
-        print("3. Mostrar Datos del EStudiante")
-        print("4. Buscar elemento por ID y Generar Imagen")
-        print("5. Salir")
-        opcion = input("Inrese una opción: ")
+            opcion = int(input("# - - - - - - - - - - MENU PRINCIPAL - - - - - - - - - - #\n"
+                               "1. Cargar archivo\n"
+                               "2. Procesar archivo\n"
+                               "3. Escribir archivo de salida\n"
+                               "4. Mostrar datos del Estudiante\n"
+                               "5. Generar Gráfica\n"
+                               "6. Inicializar Sistema\n"
+                               "7. Salir\n"
+                               "Ingresa una opción: "))
 
-        if opcion == "1":
-            carga_datos()
+            print()
 
-        elif opcion == "2":
-            elementos.mostrar()
-            
-        elif opcion == "3":
-            datos_estudiante()
+            if opcion == 1:
 
-        elif opcion == "4":
-            elementos.mostrar()
-            id_val = input("Ingrese el ID del elemento: ")
-            elemento = elementos.buscar_por_id(id_val)
-            if elemento:
-                graficar(elemento)
+                if listaSenales is None:
+                    listaSenales = SenalesList()
+
+                listaSenales.cargarXML()  # Se lee el archivo y se agregan nodos a la lista
+
+            elif opcion == 2:
+
+                """
+                Se generan la lista de datos en binario
+                Se agrupan los datos
+                """
+                if listaBinaria is None and listaAgrupados is None:
+                    listaBinaria = SenalesList()
+                    listaAgrupados = SenalesList()
+
+                nodo_Cabeza:NodoSenal = copy.deepcopy(listaSenales.cabeza) #Uso de copy para hacer una copia del objeto y
+                nodo_Copia:NodoSenal = copy.deepcopy(listaSenales.cabeza) #asi generar una instancia diferente para cada caso
+
+                listaBinaria.convertir_Binario(nodo_Cabeza)
+                listaAgrupados.agrupar_Senales(nodo_Copia)
+
+            elif opcion == 3:
+                listaAgrupados.archivo_Salida()
+
+            elif opcion == 4:
+                print("-" * 57)
+                print("Datos del Estudiante:")
+                print("Edison Mauricio García Rodríguez\n"
+                      "202200031\n"
+                      "Introducción a la Programación y Computación 2 Sección A\n"
+                      "Ingeniería en Ciencias y Sistemas\n"
+                      "4to. Semestre")
+                print("-" * 57)
+
+            elif opcion == 5:
+                listaAgrupados.generar_Grafica()
+
+            elif opcion == 6:
+
+                listaSenales = None
+                listaAgrupados = None
+                listaBinaria = None
+                print("-" * 45)
+                print("¡Se ha inicializado el sistema correctamente!")
+                print("-" * 45)
+
+            elif opcion == 7:
+                print("-" * 30)
+                print(" ¡Finalizando el programa...!")
+                print("-" * 30)
+
             else:
-                print(f"El elemento con ID {id_val} no existe")
+                print("\n¡Opción Inválida!. Ingresa una opción correcta\n")
 
-        elif opcion == "5":
-            print("-" * 20)
-            print("Saliendo del programa...")
-            print("-" * 20)
-            break
-        else:
-            print("Opción inválida")
+        except ValueError:
+
+                print("\¡Verifica tu respuesta! La respuesta debe ser un número dentro del rango del 1 al 7.\n")
+
+        print()
         input("Presione ENTER para continuar...")
         os.system('cls')
-    
-if __name__ == '__main__':
-    menu()
-        
 
+main()
