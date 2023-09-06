@@ -1,14 +1,14 @@
 from Listas.senales import SenalesList
 from Estructuras_Listas.nodoSenales import NodoSenal
-import copy
 import os
 
 #MENÚ PRINCIPAL
 def main():  
 
-    listaSenales: SenalesList = SenalesList()  # Instancia de la lista enlazada
-    listaBinaria: SenalesList = SenalesList()  # Instancia de la lista enlazada
+    listaSenales: SenalesList = SenalesList()  
+    listaBinaria: SenalesList = SenalesList()              #--------> Instancia de lista enlazada
     listaAgrupados: SenalesList = SenalesList()
+    lista = SenalesList()
 
     print("-"*60)
     print("                    Proyecto 1 - IPC2 A                       ")
@@ -19,7 +19,6 @@ def main():
     while opcion != 7:
 
         try:
-
             opcion = int(input("# - - - - - - - - - - MENU PRINCIPAL - - - - - - - - - - #\n"
                                "1. Cargar archivo\n"
                                "2. Procesar archivo\n"
@@ -29,34 +28,42 @@ def main():
                                "6. Inicializar Sistema\n"
                                "7. Salir\n"
                                "Ingresa una opción: "))
-
             print()
 
             if opcion == 1:
 
-                if listaSenales is None:
-                    listaSenales = SenalesList()
+                path_XML: str = input("\nIngresa la ruta donde se encuentra el archivo (.xml)\n"
+                                      "Ruta: ")
+                # Se realiza la lectura del archivo y se incorporan nodos en la lista
+                listaSenales.cargarXML(path_XML) # Esta lista representa graficamente los datos originales
+                lista.cargarXML(path_XML) # Los grupos se crean a partir de esta lista
 
-                listaSenales.cargarXML()  # Se lee el archivo y se agregan nodos a la lista
+                if lista.cabeza is not None:
+                    print("-" *30)
+                    print("¡Archivo cargado exitosamente!")
+                    print("-" *30)
 
             elif opcion == 2:
 
-                """
-                Se generan la lista de datos en binario
-                Se agrupan los datos
-                """
-                if listaBinaria is None and listaAgrupados is None:
-                    listaBinaria = SenalesList()
-                    listaAgrupados = SenalesList()
+                # La lista de datos se genera en formato binario, y luego se procede a agrupar los datos
+                
+                nodo_Cabeza: NodoSenal = lista.cabeza
 
-                nodo_Cabeza:NodoSenal = copy.deepcopy(listaSenales.cabeza) #Uso de copy para hacer una copia del objeto y
-                nodo_Copia:NodoSenal = copy.deepcopy(listaSenales.cabeza) #asi generar una instancia diferente para cada caso
-
-                listaBinaria.convertir_Binario(nodo_Cabeza)
-                listaAgrupados.agrupar_Senales(nodo_Copia)
+                if lista.cabeza is None:
+                    print("Para utilizar esta función, primero debes cargar un archivo (.xml) o procesarlo.")
+                
+                else:
+                    listaBinaria.convertir_Binario()
+                    listaAgrupados.agrupar_Senales(nodo_Cabeza)
+                print("")
 
             elif opcion == 3:
-                listaAgrupados.archivo_Salida()
+
+                if listaAgrupados.cabeza is None:
+                    print("Para utilizar esta función, primero debes cargar un archivo (.xml) o procesarlo.")
+
+                else:
+                    listaAgrupados.archivo_Salida()
 
             elif opcion == 4:
                 print("-" * 57)
@@ -69,13 +76,31 @@ def main():
                 print("-" * 57)
 
             elif opcion == 5:
-                listaAgrupados.generar_Grafica()
+
+                if listaAgrupados.cabeza is None:
+                    print("Para utilizar esta función, primero debes cargar un archivo (.xml) o procesarlo.")
+
+                else:
+
+                    respuesta = int(input("----- Genera una gráfica -----\n"
+                                          "1. Matriz Normal\n"
+                                          "2. Matriz Reducida\n"
+                                          "Ingresa una opción: "))
+                    if respuesta == 1:
+                        listaSenales.generarGraficaOriginal()
+
+                    elif respuesta == 2:
+                        listaAgrupados.generar_Grafica()
+
+                    else:
+                        print("Ingresa una opción que esté en el rango de 1 a 2.")
 
             elif opcion == 6:
 
-                listaSenales = None
-                listaAgrupados = None
-                listaBinaria = None
+                listaSenales = SenalesList()
+                listaAgrupados = SenalesList()
+                listaBinaria = SenalesList()
+                lista = SenalesList()
                 print("-" * 45)
                 print("¡Se ha inicializado el sistema correctamente!")
                 print("-" * 45)
