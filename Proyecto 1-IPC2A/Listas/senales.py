@@ -17,16 +17,11 @@ class SenalesList:
         self.cabeza:NodoSenal = None
     
     def cargarXML(self, path) -> None: # Esta función recopila los archivos del XML y los guarda en una lista simple
-        
-        # Usa la ruta relativa si y solo si se encuentra el archivo XML dentro de la misma carpeta donde 
-        # se encuentra el proyecto, de lo contrario usar la ruta completa
-        # (ruta completa) ej: C:\Users\eg574\OneDrive\Escritorio\IPC2A_Proyecto1_202200031\Proyecto 1-IPC2A\doctXML\senales.xml
-        # (ruta relativa) ej: doctXML\senales.xml
-        
-        path_XML: str = path
-        try:
-            # Realiza un intento de análisis del XML a partir del archivo
-            tree = ET.parse(path_XML)
+            
+        path_XML: str = path                                                            # Usa la ruta relativa si y solo si se encuentra el archivo XML dentro de la misma carpeta donde
+        try:                                                                            # se encuentra el proyecto, de lo contrario usar la ruta completa
+            # Realiza un intento de análisis del XML a partir del archivo               # (ruta completa) ej: C:\Users\eg574\OneDrive\Escritorio\IPC2A_Proyecto1_202200031\Proyecto 1-IPC2A\doctXML\senales.xml
+            tree = ET.parse(path_XML)                                                   # (ruta relativa) ej: doctXML\senales.xml
             root = tree.getroot()
 
             # Se obtiene los datos de la etiqueta 'senal'
@@ -54,13 +49,9 @@ class SenalesList:
                     else:
                         valor = int(valor)
 
-                        #Este if sirve para poder filtrar aquellos datos que cumplan el criterio de:
-                        #1. El tiempo debe de ser 0 < t <= tiempo maximo dada por la senal
-                        #2. La amplitud debe ser 0 < a <= amplitud maxima dada por la senal
-                
-                    if A_dato <= 130 and t_dato <= 3600:
-                        if A_dato <= A and A_dato > 0 and t_dato <= t and t_dato > 0:
-                            resultado = lista_datos.modificar_Dato(t_dato, A_dato, valor)
+                    if A_dato <= 130 and t_dato <= 3600:                                                #Este if sirve para poder filtrar aquellos datos que cumplan el criterio de:
+                        if A_dato <= A and A_dato > 0 and t_dato <= t and t_dato > 0:                   #1. El tiempo debe de ser 0 < t <= tiempo maximo dada por la senal
+                            resultado = lista_datos.modificar_Dato(t_dato, A_dato, valor)               #2. La amplitud debe ser 0 < a <= amplitud maxima dada por la senal
 
                             if resultado is True:
                                 dato_Nuevo:DatoSenal = DatoSenal(t_dato, A_dato, valor)
@@ -111,14 +102,12 @@ class SenalesList:
 
     def convertir_Binario(self) -> None:
 
-        #actual:NodoSenal = nodo_Cabeza #Se obtiene el nodo inicial para recorrer la lista
-        #lista_datos_Binarios:Datos_List = Datos_List()
-        print("\nLista de Senales Binarias\n")
-        print("\tSe ha generado una Matriz binaria exitosamente")
+        print("\n1. Lista de Senales Regulares\n")
+        print("\t¡Se han generado las Matrices Regulares exitosamente!")
 #
     def agrupar_Senales(self, nodo_Cabeza:NodoSenal) -> None:
 
-        print("\nLista de Senales Reducidas\n")
+        print("\n2. Lista de Senales Reducidas\n")
         actual: NodoSenal = nodo_Cabeza  # Se obtiene el nodo inicial para recorrer la lista
 
         while actual is not None:
@@ -134,7 +123,7 @@ class SenalesList:
                 print(f"¡La señal {nombre} no cuenta con los datos necesarios para generar una matriz agrupada!")
 
             else:
-                print(f"Procesando la señal {nombre} para generar una matriz agrupada...")
+                print(f"Procesando la señal {nombre} para generar una matriz Reducida...")
                 lista_Datos: Datos_List = senal.nodoC
                 lista, size = lista_Datos.grupo_Cabeza()
                 grupo_Cabeza: Grupo = Grupo(1, "1", lista, size)
@@ -147,7 +136,7 @@ class SenalesList:
                 self.add_Senal_List(senalNueva)
             actual = actual.siguiente
         
-        print("\n\t¡Se han generado las Matrices agrupadas exitosamente!")
+        print("\n\t¡Se han generado las Matrices Reducidas exitosamente!")
 
     def lista_Senales_Grupos(self) -> None:
 
@@ -186,7 +175,7 @@ class SenalesList:
                     new_Grup = ET.SubElement(senal, "grupo", g=f"{no_Grupo}")
 
                     # SE CREA LA ETIQUETA CON LOS TIEMPOS
-                    etiqueta_Tiempo = ET.SubElement(new_Grup,  "tiempos")
+                    etiqueta_Tiempo = ET.SubElement(new_Grup, "tiempos")
                     etiqueta_Tiempo.text = str(tiempos)
 
                     # ETIQUETA <datosGrupo>
@@ -212,7 +201,6 @@ class SenalesList:
 
             with open(f"{path}", "w") as archivo:
                 archivo.write(dom.toprettyxml(indent="   "))
-            print("\n")
             print("-" * 42)
             print("¡Se generó el archivo (.xml) exitosamente!")
             print("-" * 42)
@@ -226,7 +214,7 @@ class SenalesList:
             actual = self.cabeza
             print("-" * 40)
             print("¡Ingresa la senal que deseas graficar!")  
-            print("\nSenales disponibles:")
+            print("\nSenales REDUCIDAS disponibles:")
 
             while actual:
                 print(f"\t{actual.senal.nombre}")
@@ -315,7 +303,7 @@ class SenalesList:
                                 actual_g = actual.senal.g.cabeza
                                 amplitud += 1
 
-                    graph.render(f"Graficas\SenalReducida_{senal.nombre}", format=f"{image_Format}", cleanup=True)
+                    graph.render(f"GraficasSenales\Reducida_{senal.nombre}", format=f"{image_Format}", cleanup=True)
                     print("-" * 50)
                     print("¡Se ha generado y guardado gráfica exitosamente!")
                     print("-" * 50)
@@ -333,8 +321,9 @@ class SenalesList:
 
         try:
             actual = self.cabeza
-            print("\n¡Ingresa la senal que deseas graficar!")
-            print("\nSenales disponibles:")
+            print("-" * 40)
+            print("¡Ingresa la senal que deseas graficar!")
+            print("\nSenales REGULARES disponibles:")
 
             while actual:
                 print(f"\t{actual.senal.nombre}")
@@ -393,7 +382,7 @@ class SenalesList:
                                 actual_d = actual.senal.nodoC.cabeza
                                 amplitud += 1
 
-                    graph.render(f"Graficas\SenalOriginal_{senal.nombre}", format=f"{image_Format}", cleanup=True)
+                    graph.render(f"GraficasSenales\Regular_{senal.nombre}", format=f"{image_Format}", cleanup=True)
                     print("-" * 50)
                     print("¡Se ha generado y guardado gráfica exitosamente!")
                     print("-" * 50)

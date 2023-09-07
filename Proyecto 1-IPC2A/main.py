@@ -78,12 +78,14 @@ def main():
             elif opcion == 5:
 
                 if listaAgrupados.cabeza is None:
-                    print("Para utilizar esta función, primero debes cargar un archivo (.xml) o procesarlo.")
-
+                    print("-" * 85)
+                    print(" ¡Para utilizar esta función, primero debes cargar un archivo (.xml) o procesarlo! ")
+                    print("-" * 85)
+                    
                 else:
 
                     respuesta = int(input("----- Genera una gráfica -----\n"
-                                          "1. Matriz Normal\n"
+                                          "1. Matriz Regular\n"
                                           "2. Matriz Reducida\n"
                                           "Ingresa una opción: "))
                     if respuesta == 1:
@@ -93,7 +95,7 @@ def main():
                         listaAgrupados.generar_Grafica()
 
                     else:
-                        print("Ingresa una opción que esté en el rango de 1 a 2.")
+                        print("¡Verifica tu respuesta! La respuesta debe ser un número dentro del rango de 1 a 2.")
 
             elif opcion == 6:
 
@@ -115,7 +117,7 @@ def main():
 
         except ValueError:
 
-                print("\¡Verifica tu respuesta! La respuesta debe ser un número dentro del rango del 1 al 7.\n")
+                print("\n¡Verifica tu respuesta! La respuesta debe ser un número dentro del rango del 1 al 7.\n")
 
         print()
         input("Presione ENTER para continuar...")
